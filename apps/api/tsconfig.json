@@ -1,3 +1,18 @@
 {
-    "extends":"@codernex/tsconfig/api.json"
+  "extends": "@codernex/tsconfig/api.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "../../dist/api",
+    "experimentalDecorators": true,
+    "paths": {
+      "@/controller": ["controller"],
+      "@/models": ["models"],
+      "@/middleware": ["middleware"],
+      "@/routes": ["routes"],
+      "@/utils": ["utils"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

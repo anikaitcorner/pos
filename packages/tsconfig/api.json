@@ -4,10 +4,10 @@
     "display": "Express API",
     "compilerOptions": {
         "module": "NodeNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "NodeNext",
         "noEmit": true,
-        "strict": true
-
+        "strict": true,
+        "esModuleInterop": true
     },
     "include": ["src"],
     "exclude": ["node_modules"]
