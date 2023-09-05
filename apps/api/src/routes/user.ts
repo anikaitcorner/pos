@@ -9,3 +9,5 @@ userRoutes
   .route("/")
   .get(userController.getUsers)
   .post(userController.createUser);
+
+userRoutes.route("/:id").patch(userController.updateUser);
