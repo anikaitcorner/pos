@@ -4,6 +4,7 @@
 node_modules
 .pnp
 .pnp.js
+.npmrc
 
 # testing
 coverage
@@ -12,6 +13,7 @@ coverage
 .next/
 out/
 build
+dist*
 
 # misc
 .DS_Store
@@ -25,7 +27,7 @@ yarn-error.log*
 # local env files
 .env
 .env.production.local
-
+.env.staging
 
 # turbo
 .turbo

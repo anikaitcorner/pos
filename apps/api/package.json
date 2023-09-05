@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
-    "lint": "prettier --write \"**/*.{js,json,ts,yml,yaml}\"&&prettier --check \"**/*.{js,json,ts,yml,yaml}\""
+    "lint": "prettier --write \"**/*.{js,json,ts,yml,yaml}\"&&prettier --check \"**/*.{js,json,ts,yml,yaml}\"",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
