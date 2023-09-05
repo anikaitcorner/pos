@@ -4,7 +4,7 @@
 
 ```bash
 git clone https://github.com/codernex/turbo-vite-react-express-template.git
-bashCopyCode
+
 ```
 
 - Use pnpm package manager to install
