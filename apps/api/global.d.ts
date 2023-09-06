@@ -11,6 +11,7 @@ declare global {
       DB_USER: string;
       DB_PORT: string;
       DB_PASS: string;
+      REFRESH_SECRET: string;
     }
   }
 }

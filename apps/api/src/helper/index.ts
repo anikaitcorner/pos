@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError, ErrorHandler } from "@/utils";
 import { ZodSchema } from "zod";
 import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
+import { User } from "@prisma/client";
 
 /**
  *
@@ -18,7 +19,7 @@ export const requestHandler = <
   TResponse = IApiResponse<any>
 >(
   handler: (
-    req: Request<TParams, any, TBody, TQuery>,
+    req: Request<TParams, any, TBody, TQuery> & { user?: User },
     res: Response<TResponse>,
     next: NextFunction
   ) => Promise<void> | Promise<NextFunction>,
@@ -29,7 +30,7 @@ export const requestHandler = <
   }
 ) => {
   return (
-    req: Request<TParams, any, TBody, TQuery>,
+    req: Request<TParams, any, TBody, TQuery> & { user?: User },
     res: Response,
     next: NextFunction
   ) => {
