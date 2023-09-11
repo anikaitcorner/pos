@@ -11,7 +11,7 @@ export const isAuthenticated = requestHandler<
   IApiResponse<IApiError | any>
 >(async (req, res, next) => {
   try {
-    const token = req.cookies.auth || req.headers.authorization;
+    const token = req.cookies.auth;
 
     const userController = new UserController();
 

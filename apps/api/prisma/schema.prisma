@@ -9,11 +9,58 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String   
-  username  String   @unique()
-  email     String   
-  password  String  
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime @default(now()) 
+  id        String    @id @default(uuid())
+  name      String
+  username  String    @unique()
+  email     String    @unique()
+  password  String
+  business  Business?
+  role      Role      @default(ADMIN)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model Business {
+  id       String  @id @default(uuid())
+  name     String
+  location String?
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Product {
+  id           String        @id @default(uuid())
+  name         String
+  category     Category[]
+  price        Float
+  sellingPrice Float         @default(dbgenerated("sellingPrice"))
+  quantity     Int           @default(0)
+  discount     Int
+  unitType     String
+  unitNumber   String
+  grossProfit  Float
+  grossMargin  Float
+  status       ProductStatus @default(UNSOLD)
+}
+
+model Category {
+  id      String    @id @default(uuid())
+  name    String
+  product Product[]
+}
+
+enum ProductStatus {
+  SOLD
+  UNSOLD
+  LOST
+  RETURNED
+}
+
+enum Role {
+  ADMIN
+  SALES_MAN
+  MANAGER
 }

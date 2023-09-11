@@ -15,20 +15,40 @@ export class AuthController extends Controller {
 
   public loginUser = requestHandler(
     async (req, res, next) => {
-      const user = await this._p.user.findFirst({
-        where: {
-          username: req.body.usernameOrEmail,
-          OR: [{ email: req.body.usernameOrEmail }],
-        },
-      });
+      try {
+        const user = await this._p.user.findFirstOrThrow({
+          where: {
+            OR: [
+              {
+                username: req.body.usernameOrEmail,
+              },
+              {
+                email: req.body.usernameOrEmail,
+              },
+            ],
+          },
+          include: {
+            business: true,
+          },
+        });
 
-      if (!user) {
-        return ApiError("Invalid username or password", 404, next);
+        if (!user) {
+          return ApiError("Invalid username or password", 404, next);
+        }
+
+        const isPasswordMatch = bcrypt.compareSync(
+          req.body.password,
+          user.password
+        );
+
+        if (!isPasswordMatch) {
+          return ApiError("Invalid username or password", 404, next);
+        }
+
+        sendToken(res, user, next);
+      } catch (err: any) {
+        return ApiError(err.message, 404, next);
       }
-
-      sendToken(res, user, next);
-
-      // const isPasswordMatch= bcrypt.compareSync()
     },
     {
       body: loginSchema,
@@ -37,25 +57,31 @@ export class AuthController extends Controller {
 
   public refreshAuth = requestHandler(
     async (req, res, next) => {
-      const isValidRefreshToken = jwt.verify(
-        req.body.refreshToken,
-        sanitizedConfig.REFRESH_SECRET
-      ) as JwtPayload;
+      try {
+        const isValidRefreshToken = jwt.verify(
+          req.body.refreshToken,
+          sanitizedConfig.REFRESH_SECRET
+        ) as JwtPayload;
 
-      if (!isValidRefreshToken) {
-        return ApiError("Not a valid refresh token", 404, next);
+        if (!isValidRefreshToken) {
+          return ApiError("Not a valid refresh token", 404, next);
+        }
+
+        const user = await this._p.user.findFirst({
+          where: {
+            id: isValidRefreshToken.sub,
+          },
+          include: {
+            business: true,
+          },
+        });
+        if (!user) {
+          return ApiError("Something went wrong", 500, next);
+        }
+        sendToken(res, user, next);
+      } catch (err: any) {
+        return ApiError(err.message, 400, next);
       }
-
-      const user = await this._p.user.findFirst({
-        where: {
-          id: isValidRefreshToken.sub,
-        },
-      });
-      if (!user) {
-        return ApiError("Something went wrong", 500, next);
-      }
-
-      sendToken(res, user, next);
     },
     {
       body: z.object({ refreshToken: z.string() }),

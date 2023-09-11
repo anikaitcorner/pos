@@ -1,9 +1,10 @@
 import express, { Application } from "express";
 import sanitizedConfig from "./config";
-import { errorMiddleware } from "@/middleware";
+import { errorMiddleware, isAuthenticated } from "@/middleware";
 import { userRoutes, authRoutes } from "@/routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { businessRoutes } from "routes/business";
 
 const mountServer = async (app: Application) => {
   const server = app.listen(sanitizedConfig.PORT);
@@ -12,14 +13,27 @@ const mountServer = async (app: Application) => {
     console.log(`🚀Server runnig on http://localhost:${sanitizedConfig.PORT}`);
   });
 
+  const allowedOrigin = ["http://localhost:5173", "http://127.0.0.1:5173"];
+
   /**
    *
    * System Middleware
    */
   app.use(cookieParser());
   app.use(express.json());
-  app.use(express.urlencoded());
-  app.use(cors({}));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(
+    cors({
+      credentials: true,
+      origin(requestOrigin, callback) {
+        if (requestOrigin && allowedOrigin.includes(requestOrigin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
+    })
+  );
 
   /**
    * Api Routes
@@ -47,6 +61,7 @@ const mountServer = async (app: Application) => {
   app.use("/api/v1/users", userRoutes);
 
   app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/business", isAuthenticated, businessRoutes);
 
   /**
    * Error Handling

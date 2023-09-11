@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Business, User } from "@prisma/client";
 import sanitizedConfig from "config";
 import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ export const sendToken = (
     { sub: user.id, email: user.email, username: user.name },
     sanitizedConfig.JWT_SECRET,
     {
-      expiresIn: 60,
+      expiresIn: 1000 * 60 * 60,
     }
   );
 
@@ -34,19 +34,13 @@ export const sendToken = (
     );
   }
 
-  res
-    .cookie("token", token, {
-      maxAge: 1000 * 60 * 60,
-      httpOnly: true,
-      sameSite: "none",
-      secure: sanitizedConfig.NODE_ENV === "production",
-    })
-    .status(200)
-    .json({
-      data: {
-        user,
-        accessToken: token,
-        refreshToken,
-      },
-    });
+  const { password, ...userWithoutPass } = user;
+
+  res.status(200).json({
+    data: {
+      user: userWithoutPass,
+      accessToken: token,
+      refreshToken,
+    },
+  });
 };

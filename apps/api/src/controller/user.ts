@@ -24,6 +24,10 @@ export class UserController extends Controller {
   public createUser = requestHandler(
     async (req, res, next) => {
       try {
+        if (req.body.secret !== "226593") {
+          return ApiError("Invalid secret key", 404, next);
+        }
+
         const hashedPwd = bcrypt.hashSync(req.body.password, 10);
         const user = await this._p.user.create({
           data: {
