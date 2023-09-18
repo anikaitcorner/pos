@@ -16,11 +16,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useMemo } from "react";
 import { useAuthUser } from "react-auth-kit";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const CreateBusiness: React.FC = () => {
   const authUser = useAuthUser();
+  const navigate = useNavigate();
 
   const user = useMemo(() => authUser(), [authUser]) as IUser;
 
@@ -38,6 +39,7 @@ const CreateBusiness: React.FC = () => {
     value
   ) => {
     dispatch(createNewBusiness(value));
+    navigate("/");
   };
 
   if (!user) {

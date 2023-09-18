@@ -5,7 +5,8 @@ import { navigation } from "./nav";
 import { Link } from "react-router-dom";
 import React, { useCallback, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { HiChevronDown, HiChevronLeft, HiChevronRight } from "react-icons/hi2";
+import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
+import { useSidebar } from "@/hooks/useSidebar";
 
 export const Sidebar: React.FC = React.memo(() => {
   const [activeSubMenu, setActiveSubmenu] = useState<number | null>(null);
@@ -25,9 +26,7 @@ export const Sidebar: React.FC = React.memo(() => {
     [activeSubMenu]
   );
 
-  const MotionLink = motion(Link);
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isSidebarActive, action } = useSidebar();
   const sidebarVariants = {
     initial: { width: 80, opacity: 0, x: "-300" },
     animate: {
@@ -64,23 +63,15 @@ export const Sidebar: React.FC = React.memo(() => {
         className={cn("px-6 border-r border-slate-700 py-4 relative")}
         variants={sidebarVariants}
         initial="initial"
-        animate={isSidebarOpen ? "animate" : "exit"}
+        animate={isSidebarActive ? "animate" : "exit"}
       >
-        <div
-          className="absolute top-1/2 -right-2 text-3xl cursor-pointer"
-          onClick={() => {
-            setIsSidebarOpen((prev) => !prev);
-          }}
-        >
-          {isSidebarOpen ? <HiChevronLeft /> : <HiChevronRight />}
-        </div>
         <Link to="/" className="flex gap-x-2 items-center">
           <TbBrandTabler className="text-3xl" />
-          {isSidebarOpen && (
+          {isSidebarActive && (
             <motion.h2
               variants={titleVariant}
               initial="initial"
-              animate={isSidebarOpen ? "animate" : "exit"}
+              animate={isSidebarActive ? "animate" : "exit"}
               className="font-semibold"
             >
               Codernex
@@ -97,17 +88,17 @@ export const Sidebar: React.FC = React.memo(() => {
                     className="cursor-pointer flex justify-between items-center"
                     onClick={() => {
                       handleSubmenu(i);
-                      setIsSidebarOpen(true);
+                      action(true);
                     }}
                   >
                     <div className="flex gap-x-2">
                       <item.icon className="text-xl" />
-                      {isSidebarOpen && (
+                      {isSidebarActive && (
                         <p className="font-semibold">{item.title}</p>
                       )}
                     </div>
                     <span>
-                      {isSidebarOpen &&
+                      {isSidebarActive &&
                         item.submenu.length &&
                         (activeSubMenu === i ? (
                           <HiChevronDown />
@@ -118,7 +109,7 @@ export const Sidebar: React.FC = React.memo(() => {
                   </div>
 
                   <AnimatePresence>
-                    {item.submenu && isSidebarOpen && activeSubMenu === i ? (
+                    {item.submenu && isSidebarActive && activeSubMenu === i ? (
                       <motion.div
                         initial={{
                           opacity: 0,

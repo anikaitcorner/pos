@@ -1,10 +1,15 @@
 import express, { Application } from "express";
 import sanitizedConfig from "./config";
 import { errorMiddleware, isAuthenticated } from "@/middleware";
-import { userRoutes, authRoutes } from "@/routes";
+import {
+  userRoutes,
+  authRoutes,
+  businessRoutes,
+  categoryRoutes,
+  unitRoutes,
+} from "@/routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { businessRoutes } from "routes/business";
 
 const mountServer = async (app: Application) => {
   const server = app.listen(sanitizedConfig.PORT);
@@ -59,9 +64,10 @@ const mountServer = async (app: Application) => {
   });
 
   app.use("/api/v1/users", userRoutes);
-
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/business", isAuthenticated, businessRoutes);
+  app.use("/api/v1/categories", isAuthenticated, categoryRoutes);
+  app.use("/api/v1/units", isAuthenticated, unitRoutes);
 
   /**
    * Error Handling

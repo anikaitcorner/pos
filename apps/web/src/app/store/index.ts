@@ -1,12 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import products from "../slices/products.slice";
-import businessSlice from "../slices/business.slice";
+import business from "../slices/business.slice";
+import categories from "../slices/category.slice";
+import units from "../slices/unit.slice";
 
 export const store = configureStore({
   reducer: {
-    products: products,
-    business: businessSlice,
+    products,
+    business,
+    categories,
+    units,
   },
 });
 

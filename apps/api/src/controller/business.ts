@@ -46,6 +46,7 @@ export class BusinessController extends Controller {
           userId: user?.id,
         },
       });
+      console.log(business);
 
       res.status(200).json({
         data: business,

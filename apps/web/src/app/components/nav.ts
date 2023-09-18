@@ -41,15 +41,15 @@ export const navigation = [
       },
       {
         title: "Create Product",
-        href: "",
+        href: "/products/create",
       },
       {
-        title: "All Products",
-        href: "",
+        title: "Units",
+        href: "/units",
       },
       {
-        title: "Create Product",
-        href: "",
+        title: "Categories",
+        href: "/categories",
       },
     ],
   },

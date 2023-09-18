@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import {
+  Category,
   CreateBusiness,
   Dashboard,
   Login,
   Product,
   Products,
   SignUp,
+  Unit,
 } from "./app/view";
 import { AuthState, RootLayout } from "./app/components";
 import "chart.js/auto";
@@ -53,6 +55,8 @@ function App() {
               <Route index element={<Products />} />
               <Route path=":id" element={<Product />} />
             </Route>
+            <Route path="/categories" element={<Category />} />
+            <Route path="/units" element={<Unit />} />
           </Route>
         </Route>
       </Routes>

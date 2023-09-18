@@ -3,15 +3,16 @@ import LineChart from "./components/chart";
 import { Stats } from "./components/stats";
 import { TbPremiumRights, TbBoxAlignBottom } from "react-icons/tb";
 import { useAppDispatch } from "@/app/store";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { fetchProducts } from "@/app/actions/products.action";
 
-const Dashboard = () => {
+const Dashboard = React.memo(() => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-6">
@@ -48,6 +49,6 @@ const Dashboard = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Dashboard;

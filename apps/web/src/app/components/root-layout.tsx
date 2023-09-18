@@ -1,16 +1,15 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar } from "./sidebar";
-import { useAppDispatch } from "../store";
-import { useEffect } from "react";
-import { fetchBusiness } from "../actions/business.action";
+import React, { useEffect } from "react";
 import { Navbar } from "./navbar";
+import { fetchBusiness } from "../actions/business.action";
+import { useAppDispatch } from "../store";
 
-export const RootLayout = () => {
-  const navigate = useNavigate();
-
+export const RootLayout = React.memo(() => {
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   useEffect(() => {
+    // dispatch(fetchProducts());
     dispatch(fetchBusiness(navigate));
   }, [dispatch, navigate]);
 
@@ -25,4 +24,4 @@ export const RootLayout = () => {
       </div>
     </div>
   );
-};
+});
