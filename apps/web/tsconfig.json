@@ -1,5 +1,18 @@
 {
-  "extends":"@codernex/tsconfig/react.json",
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "extends": "@codernex/tsconfig/react.json",
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

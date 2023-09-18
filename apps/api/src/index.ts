@@ -1,8 +1,15 @@
 import express, { Application } from "express";
 import sanitizedConfig from "./config";
-import { appDataSource } from "orm.config";
-import { errorMiddleware } from "@/middleware";
-import { userRoutes } from "@/routes";
+import { errorMiddleware, isAuthenticated } from "@/middleware";
+import {
+  userRoutes,
+  authRoutes,
+  businessRoutes,
+  categoryRoutes,
+  unitRoutes,
+} from "@/routes";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const mountServer = async (app: Application) => {
   const server = app.listen(sanitizedConfig.PORT);
@@ -11,22 +18,27 @@ const mountServer = async (app: Application) => {
     console.log(`🚀Server runnig on http://localhost:${sanitizedConfig.PORT}`);
   });
 
-  appDataSource
-    .initialize()
-    .then(() => {
-      console.log(`Connected To Database`);
-    })
-    .catch((err) => {
-      server.close();
-    });
+  const allowedOrigin = ["http://localhost:5173", "http://127.0.0.1:5173"];
 
   /**
    *
    * System Middleware
    */
-
+  app.use(cookieParser());
   app.use(express.json());
-  app.use(express.urlencoded());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(
+    cors({
+      credentials: true,
+      origin(requestOrigin, callback) {
+        if (requestOrigin && allowedOrigin.includes(requestOrigin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
+    })
+  );
 
   /**
    * Api Routes
@@ -52,6 +64,10 @@ const mountServer = async (app: Application) => {
   });
 
   app.use("/api/v1/users", userRoutes);
+  app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/business", isAuthenticated, businessRoutes);
+  app.use("/api/v1/categories", isAuthenticated, categoryRoutes);
+  app.use("/api/v1/units", isAuthenticated, unitRoutes);
 
   /**
    * Error Handling

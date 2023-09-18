@@ -1,18 +1,10 @@
-import { appDataSource } from "orm.config";
-import {
-  EntityManager,
-  EntityTarget,
-  ObjectLiteral,
-  Repository,
-} from "typeorm";
+import { PrismaClient } from "@prisma/client";
+import prisma from "db";
 
-export abstract class Controller<TEntity extends ObjectLiteral> {
-  protected repository: Repository<TEntity>;
-  protected queryRunner = appDataSource.createQueryRunner();
-  protected manager: EntityManager;
+export abstract class Controller {
+  protected _p: PrismaClient;
 
-  constructor(entity: any) {
-    this.repository = appDataSource.getRepository(entity);
-    this.manager = this.queryRunner.manager;
+  constructor() {
+    this._p = prisma;
   }
 }

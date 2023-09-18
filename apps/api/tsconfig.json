@@ -23,7 +23,6 @@
     "resolveJsonModule": true,
     "paths": {
       "@/controller": ["controller"],
-      "@/models": ["models"],
       "@/middleware": ["middleware"],
       "@/routes": ["routes"],
       "@/utils": ["utils"]

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config({ path: path.join(__dirname, "../../../.env.staging") });
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 interface Env {
   NODE_ENV?: string;
@@ -12,6 +12,7 @@ interface Env {
   DB_USER?: string;
   DB_PORT?: number;
   DB_PASS?: string;
+  REFRESH_SECRET?: string;
 }
 
 type Config = {
@@ -32,6 +33,7 @@ const getConfig = (): Env => {
     DB_PORT: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
     DB_PASS: process.env.DB_PASS,
     DB_USER: process.env.DB_USER,
+    REFRESH_SECRET: process.env.REFRESH_SECRET,
   };
 };
 

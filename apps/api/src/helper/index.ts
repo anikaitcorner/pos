@@ -1,14 +1,15 @@
-import { IApiError, IApiResponse, IUser } from "@codernex/types";
+import { IApiResponse } from "@codernex/types";
 import { NextFunction, Request, Response } from "express";
-import { ApiError, ErrorHandler } from "@/utils";
+import { ApiError } from "@/utils";
 import { ZodSchema } from "zod";
 import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
+import { User } from "@prisma/client";
 
 /**
  *
  * @param handler An Express Request Handler Function
  * @param config An Optional Object That Takes Zod Schema as Request Query, Body, Params To Validate
- * @returns
+ * @returns Promise<void> | Promise<NextFunction>
  */
 
 export const requestHandler = <
@@ -18,7 +19,7 @@ export const requestHandler = <
   TResponse = IApiResponse<any>
 >(
   handler: (
-    req: Request<TParams, any, TBody, TQuery>,
+    req: Request<TParams, any, TBody, TQuery> & { user?: User },
     res: Response<TResponse>,
     next: NextFunction
   ) => Promise<void> | Promise<NextFunction>,
@@ -29,7 +30,7 @@ export const requestHandler = <
   }
 ) => {
   return (
-    req: Request<TParams, any, TBody, TQuery>,
+    req: Request<TParams, any, TBody, TQuery> & { user?: User },
     res: Response,
     next: NextFunction
   ) => {
