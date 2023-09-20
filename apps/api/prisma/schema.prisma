@@ -45,6 +45,7 @@ model Product {
   unitType     String
   grossProfit  Float
   grossMargin  Float
+  sku          String
 
   busines    Business @relation(fields: [businessId], references: [id])
   businessId String

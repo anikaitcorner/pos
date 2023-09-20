@@ -19,12 +19,13 @@ export const createBusinessSchema = z.object({
 });
 
 export const createProductSchema = z.object({
-  name: z.string(),
-  categoryId: z.string(),
-  price: z.number(),
-  unitCost: z.number(),
-  unitType: z.string(),
-  businessId: z.string(),
+  name: z.string().min(3),
+  categoryId: z.string().optional(),
+  price: z.number().min(2),
+  unitCost: z.number().min(2),
+  unitType: z.string().min(2),
+  businessId: z.string().describe("Business ID Required"),
+  sku: z.string().min(2),
 });
 
 export const createCategorySchema = z.object({

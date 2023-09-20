@@ -6,7 +6,7 @@ export class ProductController extends Controller {
   createProduct = requestHandler(
     async (req, res, next) => {
       try {
-        const { price, unitCost, name, businessId, unitType, categoryId } =
+        const { price, unitCost, name, businessId, unitType, categoryId, sku } =
           req.body;
         const grossProfit = price - unitCost;
         const grossMargin = ((price - unitCost) / price) * 100;
@@ -19,6 +19,7 @@ export class ProductController extends Controller {
             discount: 0,
             categoryId,
             businessId,
+            sku,
           },
         });
         res.status(200).json({ data: product });
@@ -28,4 +29,10 @@ export class ProductController extends Controller {
     },
     { body: createProductSchema }
   );
+
+  getProducts = requestHandler(async (req, res) => {
+    const products = await this._p.product.findMany();
+
+    res.status(200).json({ data: products });
+  });
 }

@@ -7,6 +7,7 @@ import {
   businessRoutes,
   categoryRoutes,
   unitRoutes,
+  productRoutes,
 } from "@/routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -68,6 +69,7 @@ const mountServer = async (app: Application) => {
   app.use("/api/v1/business", isAuthenticated, businessRoutes);
   app.use("/api/v1/categories", isAuthenticated, categoryRoutes);
   app.use("/api/v1/units", isAuthenticated, unitRoutes);
+  app.use("/api/v1/products", isAuthenticated, productRoutes);
 
   /**
    * Error Handling

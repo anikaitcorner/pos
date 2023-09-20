@@ -1,7 +1,8 @@
+import { IProduct } from "@codernex/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface IProductsState {
-  products: any[];
+  products: IProduct[];
   isLoading: boolean;
   error: string | null;
 }
