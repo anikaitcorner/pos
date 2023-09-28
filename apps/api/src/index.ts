@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { Application } from "express";
 import sanitizedConfig from "./config";
 import { errorMiddleware, isAuthenticated } from "@/middleware";
@@ -11,8 +12,11 @@ import {
 } from "@/routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { appDataSource } from "orm";
 
 const mountServer = async (app: Application) => {
+  await appDataSource.initialize();
+
   const server = app.listen(sanitizedConfig.PORT);
 
   server.on("listening", () => {

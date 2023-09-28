@@ -2,10 +2,11 @@ import { requestHandler } from "helper";
 import { Controller } from "./base";
 import { createBusinessSchema } from "@codernex/schema";
 import { ApiError } from "@/utils";
+import { Business } from "orm";
 
-export class BusinessController extends Controller {
+export class BusinessController extends Controller<Business> {
   constructor() {
-    super();
+    super(Business);
   }
 
   createBusiness = requestHandler(
@@ -13,17 +14,17 @@ export class BusinessController extends Controller {
       try {
         const user = req.user;
 
-        const business = await this._p.business.create({
-          data: {
-            name: req.body.name,
-            location: req.body?.location,
-            user: {
-              connect: {
-                id: user?.id,
-              },
-            },
-          },
+        if (!user) {
+          return ApiError("No user found", 404, next);
+        }
+
+        const business = this.repository.create({
+          name: req.body.name,
+          location: req.body.location,
+          users: [user],
         });
+
+        await this.repository.save(business);
 
         res.status(200).json({
           data: business,
@@ -41,12 +42,13 @@ export class BusinessController extends Controller {
     try {
       const user = req.user;
 
-      const business = await this._p.business.findFirstOrThrow({
+      const business = await this.repository.findOne({
         where: {
-          userId: user?.id,
+          users: {
+            id: user?.id,
+          },
         },
       });
-      console.log(business);
 
       res.status(200).json({
         data: business,

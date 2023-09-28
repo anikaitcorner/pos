@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "@/utils";
 import { ZodSchema } from "zod";
 import { generateErrorMessage, ErrorMessageOptions } from "zod-error";
-import { User } from "@prisma/client";
+import { User } from "orm";
 
 /**
  *

@@ -7,30 +7,26 @@ import { sendToken } from "utils/authToken";
 import { z } from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import sanitizedConfig from "config";
+import { User } from "orm";
 
-export class AuthController extends Controller {
+export class AuthController extends Controller<User> {
   constructor() {
-    super();
+    super(User);
   }
 
   public loginUser = requestHandler(
     async (req, res, next) => {
       try {
-        const user = await this._p.user.findFirstOrThrow({
-          where: {
-            OR: [
-              {
-                username: req.body.usernameOrEmail,
-              },
-              {
-                email: req.body.usernameOrEmail,
-              },
-            ],
-          },
-          include: {
-            business: true,
-          },
-        });
+        const user = await this.repository
+          .createQueryBuilder("user")
+          .leftJoinAndSelect("user.business", "business")
+          .where("user.username=:username", {
+            username: req.body.usernameOrEmail,
+          })
+          .orWhere("user.email=:username", {
+            username: req.body.usernameOrEmail,
+          })
+          .getOne();
 
         if (!user) {
           return ApiError("Invalid username or password", 404, next);
@@ -67,11 +63,11 @@ export class AuthController extends Controller {
           return ApiError("Not a valid refresh token", 404, next);
         }
 
-        const user = await this._p.user.findFirst({
+        const user = await this.repository.findOne({
           where: {
             id: isValidRefreshToken.sub,
           },
-          include: {
+          relations: {
             business: true,
           },
         });

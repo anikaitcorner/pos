@@ -1,5 +1,6 @@
 import { fetchBusiness } from "@/app/actions/business.action";
 import { fetchCategory } from "@/app/actions/category.action";
+import { createProducts, fetchProducts } from "@/app/actions/products.action";
 import { fetchUnits } from "@/app/actions/unit.action";
 import { PrintAbleLayout } from "@/app/components/printable-layout";
 import { useAppDispatch, useTypedSelector } from "@/app/store";
@@ -38,6 +39,7 @@ const Products = () => {
   useEffect(() => {
     dispatch(fetchUnits());
     dispatch(fetchCategory());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const navigate = useNavigate();
@@ -62,9 +64,7 @@ const Products = () => {
   const onSubmit: SubmitHandler<z.infer<typeof createProductSchema>> = (
     value
   ) => {
-    console.log(value);
-
-    // dispatch(createProducts(value));
+    dispatch(createProducts(value));
   };
 
   const [open, setOpen] = useState(false);

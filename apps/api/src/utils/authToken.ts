@@ -1,9 +1,9 @@
-import { Business, User } from "@prisma/client";
 import sanitizedConfig from "config";
 import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 import { ApiError } from "./error";
 import { IApiResponse } from "@codernex/types";
+import { User } from "orm/entity";
 
 export const sendToken = (
   res: Response<IApiResponse<any>>,
