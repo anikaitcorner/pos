@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { Application } from "express";
 import sanitizedConfig from "./config";
 import { errorMiddleware, isAuthenticated } from "@/middleware";
@@ -7,11 +8,15 @@ import {
   businessRoutes,
   categoryRoutes,
   unitRoutes,
+  productRoutes,
 } from "@/routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { appDataSource } from "orm";
 
 const mountServer = async (app: Application) => {
+  await appDataSource.initialize();
+
   const server = app.listen(sanitizedConfig.PORT);
 
   server.on("listening", () => {
@@ -68,6 +73,7 @@ const mountServer = async (app: Application) => {
   app.use("/api/v1/business", isAuthenticated, businessRoutes);
   app.use("/api/v1/categories", isAuthenticated, categoryRoutes);
   app.use("/api/v1/units", isAuthenticated, unitRoutes);
+  app.use("/api/v1/products", isAuthenticated, productRoutes);
 
   /**
    * Error Handling

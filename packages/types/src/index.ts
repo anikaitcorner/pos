@@ -56,3 +56,8 @@ export interface IUnit {
   name: string;
   shortName: string;
 }
+
+export enum Role {
+  ADMIN = "ADMIN",
+  USER = "USER",
+}

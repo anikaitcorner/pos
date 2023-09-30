@@ -4,18 +4,15 @@ import { createUserSchema } from "@codernex/schema";
 import * as bcrypt from "bcryptjs";
 import { ApiError, ErrorHandler, sendToken } from "@/utils";
 import { z } from "zod";
+import { User } from "orm/entity";
 
-export class UserController extends Controller {
+export class UserController extends Controller<User> {
   constructor() {
-    super();
+    super(User);
   }
 
   public getUsers = requestHandler(async (req, res) => {
-    const user = await this._p.user.findMany({
-      select: {
-        password: false,
-      },
-    });
+    const user = await this.repository.find({ select: { password: false } });
     res.status(200).json({
       data: user,
     });
@@ -29,14 +26,16 @@ export class UserController extends Controller {
         }
 
         const hashedPwd = bcrypt.hashSync(req.body.password, 10);
-        const user = await this._p.user.create({
-          data: {
-            email: req.body.email,
-            name: req.body.name,
-            username: req.body.username,
-            password: hashedPwd,
-          },
+
+        const user = this.repository.create({
+          email: req.body.email,
+          name: req.body.name,
+          username: req.body.username,
+          password: hashedPwd,
+          role: req.body.role,
         });
+
+        await this.repository.save(user);
 
         sendToken(res, user, next);
       } catch (err) {
@@ -53,11 +52,12 @@ export class UserController extends Controller {
   public updateUser = requestHandler(
     async (req, res, next) => {
       try {
-        const user = await this._p.user.findFirst({
-          where: {
+        const user = await this.repository.update(
+          {
             id: req.params.id,
           },
-        });
+          {}
+        );
 
         res.status(200).json({
           data: user,
@@ -74,6 +74,9 @@ export class UserController extends Controller {
   );
 
   async findUserById(id?: string) {
-    return await this._p.user.findUnique({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: { business: true },
+    });
   }
 }

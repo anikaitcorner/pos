@@ -4,7 +4,6 @@ import {
   CreateBusiness,
   Dashboard,
   Login,
-  Product,
   Products,
   SignUp,
   Unit,
@@ -53,7 +52,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="/products">
               <Route index element={<Products />} />
-              <Route path=":id" element={<Product />} />
+              {/* <Route path=":id" element={<Product />} /> */}
             </Route>
             <Route path="/categories" element={<Category />} />
             <Route path="/units" element={<Unit />} />

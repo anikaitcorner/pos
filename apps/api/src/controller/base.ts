@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
-import prisma from "db";
+import { appDataSource } from "orm";
+import { EntitySchema, EntityTarget, ObjectLiteral, Repository } from "typeorm";
 
-export abstract class Controller {
-  protected _p: PrismaClient;
+export abstract class Controller<T extends ObjectLiteral> {
+  protected repository: Repository<T>;
 
-  constructor() {
-    this._p = prisma;
+  constructor(Entity: EntityTarget<T>) {
+    this.repository = appDataSource.getRepository(Entity);
   }
 }

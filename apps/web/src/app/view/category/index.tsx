@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCategorySchema } from "@codernex/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +19,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useAppDispatch, useTypedSelector } from "@/app/store";
 import { fetchCategory, postCategory } from "@/app/actions/category.action";
 import { DataTable } from "@/components/data-table";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 const columns: ColumnDef<ICategory>[] = [
   {
     accessorKey: "id",
@@ -33,39 +40,9 @@ const columns: ColumnDef<ICategory>[] = [
     header: "Name",
   },
 ];
-const animation: Variants = {
-  initial: {
-    opacity: 0,
-    y: -300,
-    height: 0,
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      ease: "easeIn",
-      duration: 0.5,
-    },
-    height: "fit-content",
-  },
-  exit: {
-    opacity: 0,
-    y: -300,
-    transition: {
-      ease: "easeOut",
-      duration: 0.5,
-    },
-  },
-};
 
 const Category = React.memo(() => {
-  const [toggleCreateCategory, setToggleCreateCategory] = useState(false);
   const dispatch = useAppDispatch();
-
-  const handleToggle = useCallback(
-    () => setToggleCreateCategory((prev) => !prev),
-    []
-  );
 
   const form = useForm<z.infer<typeof createCategorySchema>>({
     defaultValues: {
@@ -88,27 +65,26 @@ const Category = React.memo(() => {
   const { categories, isLoading } = useTypedSelector(
     (state) => state.categories
   );
+  const [open, setOpen] = useState(false);
 
   return (
     <PrintAbleLayout title="Categories">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            handleToggle();
-          }}
-          className="border border-slate-500"
-          variant={"outline"}
-        >
-          {toggleCreateCategory ? "Close" : "Add"}
-        </Button>
-      </div>
-      <AnimatePresence>
-        <motion.div
-          variants={animation}
-          initial="initial"
-          animate={toggleCreateCategory ? "animate" : "exit"}
-          className="border border-slate-400 px-3 py-2 rounded-md my-4"
-        >
+      <Sheet open={open} onOpenChange={setOpen}>
+        <div className="flex justify-end my-2">
+          <Button
+            onClick={() => setOpen(true)}
+            className="border border-slate-500"
+            variant={"outline"}
+          >
+            Add
+          </Button>
+        </div>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>
+              Are you sure absolutely to adding a category?
+            </SheetTitle>
+          </SheetHeader>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -128,12 +104,12 @@ const Category = React.memo(() => {
                 }}
                 name="name"
               />
-
-              <Button>Submit</Button>
+              <Button type="submit">Submit</Button>
             </form>
           </Form>
-        </motion.div>
-      </AnimatePresence>
+        </SheetContent>
+      </Sheet>
+
       <DataTable data={categories} columns={columns} />
     </PrintAbleLayout>
   );
